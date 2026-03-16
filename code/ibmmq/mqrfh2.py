@@ -3,6 +3,7 @@
 # Copyright (c) 2025, 2026 IBM Corporation and other Contributors. All Rights Reserved.
 # Copyright (c) 2009-2024 Dariusz Suchojad. All Rights Reserved.
 
+import re
 import xml.etree.ElementTree as ET
 
 from mqcommon import *
@@ -168,7 +169,10 @@ class RFH2(MQOpts):
 
             # Check that the folder is valid xml and get the root tag name.
             try:
-                folder_name = ET.fromstring(folder_data).tag
+                g = re.match(b"^<(\\S+?)", folder_data)
+                if g:
+                    folder_name = str(g[1])
+
             except Exception as e:
                 raise PYIFError('RFH2 - XML Folder not well formed. Exception: %s' % str(e)) from e
 
